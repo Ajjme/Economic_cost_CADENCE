@@ -1,0 +1,4 @@
+[console_scripts]
+cadence-calculate-roof-economics = cadence.economics.cli:main
+cadence-calculate-year1-damage = cadence.reference_data.year1_damage:main
+cadence-expand-material-prices = cadence.reference_data.material_price_expansion:main

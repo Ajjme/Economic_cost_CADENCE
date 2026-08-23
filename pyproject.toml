@@ -1,0 +1,46 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "cadence"
+version = "0.1.0"
+description = "CADENCE roof resilience simulation and reference-data builders"
+requires-python = ">=3.9"
+dependencies = [
+    "duckdb>=1.1,<2",
+    "openpyxl>=3.1,<4",
+    "pydantic>=2.7,<3",
+    "polars>=1.0,<2",
+    "pyarrow>=17,<20",
+    "scipy>=1.10,<2",
+]
+
+[project.optional-dependencies]
+geo = [
+    "geopandas>=1.0,<2",
+    "shapely>=2.0,<3",
+]
+report = [
+    "geopandas>=1.0,<2",
+    "matplotlib>=3.8,<4",
+]
+test = ["pytest>=8,<9"]
+
+[project.scripts]
+cadence-calculate-year1-damage = "cadence.reference_data.year1_damage:main"
+cadence-calculate-roof-economics = "cadence.economics.cli:main"
+cadence-calculate-geographic-roof-economics = "cadence.economics.geographic_cli:main"
+cadence-expand-material-prices = "cadence.reference_data.material_price_expansion:main"
+cadence-build-zcta-dimension = "cadence.reference_data.geographic_crosswalk:main"
+cadence-render-economic-report = "cadence.economics.reporting:main"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-q"
+markers = [
+    "integration: exercises full repository data sources and may take longer",
+]

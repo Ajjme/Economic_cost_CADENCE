@@ -1,0 +1,16 @@
+Metadata-Version: 2.4
+Name: cadence
+Version: 0.1.0
+Summary: CADENCE roof resilience simulation and reference-data builders
+Requires-Python: >=3.9
+Requires-Dist: duckdb<2,>=1.1
+Requires-Dist: openpyxl<4,>=3.1
+Requires-Dist: pydantic<3,>=2.7
+Requires-Dist: polars<2,>=1.0
+Requires-Dist: pyarrow<20,>=17
+Requires-Dist: scipy<2,>=1.10
+Provides-Extra: geo
+Requires-Dist: geopandas<2,>=1.0; extra == "geo"
+Requires-Dist: shapely<3,>=2.0; extra == "geo"
+Provides-Extra: test
+Requires-Dist: pytest<9,>=8; extra == "test"
