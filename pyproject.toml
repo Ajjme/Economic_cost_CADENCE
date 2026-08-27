@@ -31,6 +31,7 @@ test = ["pytest>=8,<9"]
 cadence-calculate-year1-damage = "cadence.reference_data.year1_damage:main"
 cadence-calculate-roof-economics = "cadence.economics.cli:main"
 cadence-calculate-geographic-roof-economics = "cadence.economics.geographic_cli:main"
+cadence-render-disposal-tipping-fees-map = "cadence.economics.disposal_map:main"
 cadence-expand-material-prices = "cadence.reference_data.material_price_expansion:main"
 cadence-build-zcta-dimension = "cadence.reference_data.geographic_crosswalk:main"
 cadence-render-economic-report = "cadence.economics.reporting:main"

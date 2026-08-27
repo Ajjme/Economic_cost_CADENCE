@@ -24,6 +24,16 @@ MATERIAL_COLORS = {
     "OFFICIAL_TILE": "#D6A23D",
 }
 MATERIAL_ORDER = tuple(MATERIAL_LABELS)
+SCGHG_SCENARIOS = (
+    ("2.5pct", "2.5%", "#C14953"),
+    ("2.0pct", "2.0%", "#26747A"),
+    ("1.5pct", "1.5%", "#D6A23D"),
+)
+SCGHG_GASES = (
+    ("co2", "CO2"),
+    ("ch4", "CH4"),
+    ("n2o", "N2O"),
+)
 
 
 def build_geographic_report_tables(
@@ -433,6 +443,73 @@ def render_geographic_report(
         json.dumps(manifest, indent=2, sort_keys=True), encoding="utf-8"
     )
     return manifest
+
+
+def render_scghg_trajectory_figure(
+    scghg_csv_path: Path,
+    output_png_path: Path,
+) -> Path:
+    """Render the SC-GHG time series for CO2, CH4, and N2O into one PNG."""
+    import matplotlib as mpl
+    import matplotlib.pyplot as plt
+
+    mpl.rcParams.update(
+        {
+            "font.family": ["Avenir Next", "DejaVu Sans"],
+            "font.size": 11,
+            "axes.titlesize": 15,
+            "axes.labelsize": 11,
+            "axes.edgecolor": "#40474F",
+            "axes.linewidth": 0.8,
+            "axes.grid": True,
+            "grid.color": "#D9DEE3",
+            "grid.linewidth": 0.6,
+            "figure.facecolor": "white",
+            "axes.facecolor": "white",
+            "savefig.facecolor": "white",
+        }
+    )
+
+    scghg = pl.read_csv(scghg_csv_path).to_pandas()
+    output_png_path.parent.mkdir(parents=True, exist_ok=True)
+
+    figure, axes = plt.subplots(3, 1, figsize=(16, 13), sharex=True)
+    figure.subplots_adjust(left=0.08, right=0.98, bottom=0.08, top=0.92, hspace=0.28)
+
+    for axis, (gas_key, gas_label) in zip(axes, SCGHG_GASES):
+        for scenario_key, scenario_label, color in SCGHG_SCENARIOS:
+            column = f"scc_{gas_key}_{scenario_key}"
+            axis.plot(
+                scghg["emission_year"],
+                scghg[column],
+                color=color,
+                linewidth=2.6,
+                label=scenario_label,
+            )
+        axis.set_title(gas_label, loc="left", fontweight="bold")
+        axis.set_ylabel("USD per metric ton")
+        axis.legend(frameon=False, ncol=3, loc="upper left")
+        axis.spines[["top", "right"]].set_visible(False)
+
+    axes[-1].set_xlabel("Emission year")
+    figure.suptitle(
+        "Social cost of greenhouse gases by emission year",
+        x=0.08,
+        y=0.98,
+        ha="left",
+        fontsize=20,
+        fontweight="bold",
+    )
+    figure.text(
+        0.08,
+        0.945,
+        "Separate panels keep the CO2, CH4, and N2O scales readable; lines show the 2.5%, 2.0%, and 1.5% discount-rate scenarios.",
+        color="#59636E",
+        fontsize=12,
+    )
+    figure.savefig(output_png_path, dpi=220, bbox_inches="tight")
+    plt.close(figure)
+    return output_png_path
 
 
 def _save_figure(figure: object, path: Path) -> list[Path]:
